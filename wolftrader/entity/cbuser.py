@@ -1,5 +1,5 @@
 from coinbase.wallet.client import Client
-from ..util.logger import *
+from wolftrader.util.logger import *
 
 class CoinbaseUser:
 
@@ -25,7 +25,7 @@ class CoinbaseUser:
 
             log_info('{}, success | CoinbaseUser has been initialized: {}'.format(CoinbaseUser.class_name, self.user_name))
         except Exception as error:
-            log_error('{}, there was an error | Failed to initialize a CoinbaseUser: {}'.format(CoinbaseUser.class_name, error))
+            log_critical('{}, there was an error | Failed to initialize a CoinbaseUser: {}'.format(CoinbaseUser.class_name, error))
 
     # Returns a tuple with buy price information(amount, currency)
     @property
@@ -41,6 +41,15 @@ class CoinbaseUser:
     @property
     def get_spot_price(self):
         return self.user.get_spot_price(currency='USD')
+
+    @property
+    def get_price_records(self):
+        buy_price = self.get_buy_price
+        spot_price = self.get_spot_price
+        sell_price = self.get_sell_price
+        return(buy_price.amount, buy_price.currency,
+               spot_price.amount, spot_price.currency,
+               sell_price.amount, sell_price.currency)
 
     # Generates a unique transaction address
     @property
