@@ -1,5 +1,5 @@
 from wolftrader.application import gmail_account, gmail_password, gmail_port, gmail_stmp, \
-    report_buy, report_sell, report_report, report_table, \
+    report_buy, report_sell, report_report, \
     wolf_logo, indicators_graph, rsi_graph
 from wolftrader.util.logger import *
 import smtplib
