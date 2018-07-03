@@ -34,8 +34,11 @@ try:
     report_buy = os.path.join(WOLF, config.get('Reports','report.buy'))
     report_sell = os.path.join(WOLF, config.get('Reports','report.sell'))
     report_report = os.path.join(WOLF, config.get('Reports','report.report'))
+    report_table = os.path.join(WOLF, config.get('Reports', 'report.report.table'))
 
     #Images
-    wolf_logo = os.path.join(WOLF, config.get('Images', 'wolfie.logo.img'))
+    wolf_logo = os.path.join(WOLF, config.get('Images', 'image.logo.wolfie'))
+    indicators_graph = os.path.join(WOLF, config.get('Images', 'image.graph.indicators'))
+    rsi_graph = os.path.join(WOLF, config.get('Images', 'image.graph.rsi'))
 except Exception as error:
     print('An error has occurred: {}'.format(error.error))

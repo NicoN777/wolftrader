@@ -1,5 +1,6 @@
 from wolftrader.application import gmail_account, gmail_password, gmail_port, gmail_stmp, \
-    report_buy, report_sell, report_report, wolf_logo
+    report_buy, report_sell, report_report, report_table, \
+    wolf_logo, indicators_graph, rsi_graph
 from wolftrader.util.logger import *
 import smtplib
 
@@ -33,9 +34,9 @@ class EmailUtil:
             msg.preamble = '''Your mail does not support the email format'''
             if template:
                 with open(wolf_logo, 'rb') as wl:
-                    img = MIMEImage(wl.read(), 'png')
-                    img.add_header('Content-ID', '<wolfie>')
-                    msg.attach(img)
+                    logo = MIMEImage(wl.read(), 'png')
+                    logo.add_header('Content-ID', '<wolfie>')
+                    msg.attach(logo)
                 if template == 'buy':
                     with open(report_buy, 'r') as rb:
                         body = MIMEText(rb.read(), 'html')
@@ -47,9 +48,16 @@ class EmailUtil:
                         msg.attach(body)
 
                 elif template == 'report':
-                    with open(report_report, 'r') as r:
+                    with open(report_report, 'r') as r, open(indicators_graph, 'rb') as ig, \
+                        open(rsi_graph, 'rb') as rg:
+                        indicators = MIMEImage(ig.read(), 'png')
+                        rsi = MIMEImage(rg.read(), 'png')
+                        indicators.add_header('Content-ID', '<indicators>')
+                        rsi.add_header('Content-ID', '<rsi>')
                         body = MIMEText(r.read(), 'html')
                         msg.attach(body)
+                        msg.attach(indicators)
+                        msg.attach(rsi)
                 else:
                     log_error('No template specified')
 
