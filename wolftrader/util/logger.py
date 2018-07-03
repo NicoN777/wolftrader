@@ -21,6 +21,6 @@ try:
         logger.error(message)
 
     def log_critical(message):
-        logger.critical()
+        logger.critical(message)
 except Exception as error:
     print('There was an exception in logger.py, Error: {}'.format(error))

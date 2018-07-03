@@ -20,9 +20,22 @@ try:
     coinbase_user_key = str(config.get('CoinbaseProperties', 'coinbase.user.key'))
     coinbase_user_secret = str(config.get('CoinbaseProperties', 'coinbase.user.secret'))
     #Email Properties
+    gmail_account = str(config.get('EmailProperties', 'gmail.account'))
+    gmail_password = str(config.get('EmailProperties', 'gmail.pass'))
+    gmail_port = config.getint('EmailProperties', 'gmail.port')
+    gmail_stmp = str(config.get('EmailProperties', 'gmail.smtp'))
 
     #HtmlTemplates
+    email_buy_template = os.path.join(WOLF, config.get('HtmlTemplates', 'email.template.buy'))
+    email_sell_template = os.path.join(WOLF, config.get('HtmlTemplates','email.template.sell'))
+    email_report_template = os.path.join(WOLF, config.get('HtmlTemplates','email.template.report'))
+
+    #Reports
+    report_buy = os.path.join(WOLF, config.get('Reports','report.buy'))
+    report_sell = os.path.join(WOLF, config.get('Reports','report.sell'))
+    report_report = os.path.join(WOLF, config.get('Reports','report.report'))
 
     #Images
+    wolf_logo = os.path.join(WOLF, config.get('Images', 'wolfie.logo.img'))
 except Exception as error:
     print('An error has occurred: {}'.format(error.error))
