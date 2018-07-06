@@ -24,10 +24,10 @@ class PriceHistoryDAO(DatabaseUtil):
 
     def get_price_records(self):
         try:
-            sql = 'SELECT BUY_PRICE, BUY_PRICE_CURRENCY, ' \
+            sql = 'SELECT EXTRACTION_DATE, BUY_PRICE, BUY_PRICE_CURRENCY, ' \
                   'SPOT_PRICE, SPOT_PRICE_CURRENCY, ' \
                   'SELL_PRICE, SELL_PRICE_CURRENCY ' \
-                  'FROM PRICE_HISTORY'
+                  'FROM PRICE_HISTORY ORDER BY EXTRACTION_DATE'
             cursor = DatabaseUtil.cursor.execute(sql)
             column_names = list(map(lambda x: x[0], cursor.description))
             data = {'column_names': column_names, 'records': cursor.fetchall()}

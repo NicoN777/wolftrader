@@ -1,3 +1,6 @@
 .idea/
 logs/
 **/*.pyc
+data/
+data_massage.py
+**/*.csv

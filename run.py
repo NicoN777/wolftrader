@@ -8,18 +8,23 @@
         "trade"
 """
 import sys
+import time
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:
         if sys.argv[1] == 'data_mine':
-            from wolftrader.wolf import mine
-            mine()
-        elif sys.argv[1] == 'data_visualize':
-            from wolftrader.wolf import visualize
-            visualize()
+            while True:
+                from wolftrader.wolf import mine
+                mine()
+                time.sleep(300)
+        elif sys.argv[1] == 'data_process':
+            from wolftrader.wolf import process
+            process()
         elif sys.argv[1] == 'trade':
-            from wolftrader.wolf import trade
-            trade()
+            while True:
+                from wolftrader.wolf import trade
+                trade()
+                time.sleep(300)
         else:
             print('Parameter not recognized')
     else:
