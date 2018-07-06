@@ -1,5 +1,5 @@
 #Author: Nicolas Nunez
-#Will put my data in lovely csv format
+#Put my fucking data in lovely csv format
 
 import csv
 import json
@@ -10,15 +10,23 @@ with open('data/spot_price.json', 'r') as spot, \
         open('data/sell_price.json', 'r') as sell, \
         open('data/buy_price.json', 'r') as buy, \
         open('data/timestamps.json') as timestamps:
-    records = [(json.loads(l), json.loads(i), json.loads(j), json.loads(k)) for i in buy for j in spot for k in sell for l in timestamps]
 
-price_record = {'EXTRACTION_DATE': list(), 'BUY_PRICE': list(), 'BUY_PRICE_CURRENCY': list(), 'SPOT_PRICE': list(), 'SPOT_PRICE_CURRENCY': list(), 'SELL_PRICE': list(), 'SELL_PRICE_CURRENCY': list()}
+    records = list()
+    for a,b,c,d in zip(timestamps, buy, spot, sell):
+        records.append((json.loads(a),json.loads(b),json.loads(c),json.loads(d)))
+
+price_record = {'EXTRACTION_DATE': list(),
+                'BUY_PRICE': list(),
+                'BUY_PRICE_CURRENCY': list(),
+                'SPOT_PRICE': list(),
+                'SPOT_PRICE_CURRENCY': list(),
+                'SELL_PRICE': list(),
+                'SELL_PRICE_CURRENCY': list()}
 for record in records:
     i = 0
     for data in record:
         if 'data' in data.keys():
             if 'iso' in data['data'].keys():
-                # print('Parsing a date')
                 i += 1
                 date = data['data']['iso']
                 price_record['EXTRACTION_DATE'].append(date)

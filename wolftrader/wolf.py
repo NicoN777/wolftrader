@@ -30,8 +30,6 @@ def mine():
 
 def __calculate():
     log_info('Calculate Indicators')
-    print(user_dao.get_user_emails())
-    print(user_dao.get_user_by_id('1'))
     prices = price_history_dao.get_price_records()
     prices_dataframe = pd.DataFrame(data=prices['records'], columns=prices['column_names'])
     prices_dataframe.set_index(keys='EXTRACTION_DATE', inplace=True)
@@ -40,11 +38,15 @@ def __calculate():
     prices_dataframe['LOWER_BOLLINGER'] = prices_dataframe['MA24'] - (2 * prices_dataframe['SPOT_PRICE'].rolling(24).std())
     print(prices_dataframe[['SPOT_PRICE', 'MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER']])
     prices_dataframe[['SPOT_PRICE', 'MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER']].plot(figsize=(16, 5))
+    plt.title("WolfiePE Indicators")
+    plt.tight_layout()
     plt.savefig(indicators_graph)
+    # plt.show()
 
 def process():
     log_info('Data Processing')
     __calculate()
+    email_util.send_email("indicators", None, ['nicolasnunezromay@gmail.com'], "hola", 'report')
 
 def trade():
     log_info('Wolf Trader')

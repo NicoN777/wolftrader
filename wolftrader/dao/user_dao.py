@@ -27,6 +27,7 @@ class UserDAO(DatabaseUtil):
             cursor = DatabaseUtil.cursor.execute(sql)
             data = cursor.fetchall()
             log_info('{} | get_user_emails successful, SQL={} '.format(UserDAO.class_name, sql))
+            print(data, type(data))
             return data
         except Exception as error:
             log_critical('{} | get_user_emails. Error: {}'.format(UserDAO.class_name, error))
