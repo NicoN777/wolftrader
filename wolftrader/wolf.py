@@ -33,20 +33,40 @@ def __calculate():
     prices = price_history_dao.get_price_records()
     prices_dataframe = pd.DataFrame(data=prices['records'], columns=prices['column_names'])
     prices_dataframe.set_index(keys='EXTRACTION_DATE', inplace=True)
-    prices_dataframe['MA24'] = prices_dataframe['SPOT_PRICE'].rolling(24).mean()
-    prices_dataframe['UPPER_BOLLINGER'] = prices_dataframe['MA24'] + (2 * prices_dataframe['SPOT_PRICE'].rolling(24).std())
-    prices_dataframe['LOWER_BOLLINGER'] = prices_dataframe['MA24'] - (2 * prices_dataframe['SPOT_PRICE'].rolling(24).std())
-    print(prices_dataframe[['SPOT_PRICE', 'MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER']])
-    prices_dataframe[['SPOT_PRICE', 'MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER']].plot(figsize=(16, 5))
-    plt.title("WolfiePE Indicators")
+    indicators = pd.DataFrame(index=prices_dataframe.index, data=prices_dataframe['SPOT_PRICE'])
+    indicators['MA24'] = indicators['SPOT_PRICE'].rolling(24).mean()
+    indicators['UPPER_BOLLINGER'] = indicators['MA24'] + (2 * indicators['SPOT_PRICE'].rolling(24).std())
+    indicators['LOWER_BOLLINGER'] = indicators['MA24'] - (2 * indicators['SPOT_PRICE'].rolling(24).std())
+    # print(prices_dataframe[['SPOT_PRICE', 'MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER']])
+
+    indicators['DIFF'] = indicators['SPOT_PRICE'].diff()
+    indicators['ADVA'] = indicators[indicators['DIFF'] >= 0]['DIFF']
+    indicators['DECL'] = -1 * (indicators[indicators['DIFF'] <= 0]['DIFF'])
+    indicators[['ADVA', 'DECL']] = indicators[['ADVA', 'DECL']].fillna(0)
+    indicators['AVG_GAIN'] = indicators['ADVA'].rolling(14).mean()
+    indicators['AVG_LOSS'] = indicators['DECL'].rolling(14).mean()
+    indicators['RS'] = indicators['AVG_GAIN'] / indicators['AVG_LOSS']
+    indicators['RSI'] = 100 - (100 / (1 + indicators['RS']))
+    indicators['LOWER'] = 30
+    indicators['UPPER'] = 70
+
+    indicators[['SPOT_PRICE', 'MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER']].plot(figsize=(16, 5))
+    plt.title("WolfiePE Indicators Bollinger")
     plt.tight_layout()
     plt.savefig(indicators_graph)
+
+    indicators[['RSI', 'LOWER', 'UPPER']].plot(figsize=(16,5))
+    plt.title("WolfiePE Indicators RSI")
+    plt.tight_layout()
+    plt.savefig(rsi_graph)
+
+
     # plt.show()
 
 def process():
     log_info('Data Processing')
     __calculate()
-    email_util.send_email("indicators", None, ['nicolasnunezromay@gmail.com'], "hola", 'report')
+    # email_util.send_email("indicators", None, ['nicolasnunezromay@gmail.com'], "hola", 'report')
 
 def trade():
     log_info('Wolf Trader')
