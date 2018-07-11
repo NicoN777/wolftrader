@@ -31,7 +31,21 @@ class PriceHistoryDAO(DatabaseUtil):
             cursor = DatabaseUtil.cursor.execute(sql)
             column_names = list(map(lambda x: x[0], cursor.description))
             data = {'column_names': column_names, 'records': cursor.fetchall()}
+            log_info('{} | get_price_records(), SQL = {}, executed successfully'.format(PriceHistoryDAO.class_name, sql))
             return data
         except Exception as error:
             log_critical('{} error while executing {}\n Error: {}'.format(PriceHistoryDAO.class_name, sql, error))
+
+    def get_price_records_param(self, num_records):
+        try:
+            sql = 'SELECT EXTRACTION_DATE, BUY_PRICE, BUY_PRICE_CURRENCY, ' \
+                  'SPOT_PRICE, SPOT_PRICE_CURRENCY, ' \
+                  'SELL_PRICE, SELL_PRICE_CURRENCY ' \
+                  'FROM PRICE_HISTORY ORDER BY EXTRACTION_DATE LIMIT {}'.format(num_records)
+            cursor = DatabaseUtil.cursor.execute(sql)
+            column_names = list(map(lambda x:x[0], cursor.description))
+            data = {'column_names': column_names, 'records':cursor.fetchall()}
+            return data
+        except Exception as error:
+            log_critical('{} | get_price_records({}), SQL = {}\n Error: {}'.format(PriceHistoryDAO.class_name, num_records, sql, error))
 

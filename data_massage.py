@@ -46,4 +46,4 @@ for record in records:
                     price_record['SELL_PRICE_CURRENCY'].append(currency)
 
 records = pd.DataFrame(price_record)
-records[['EXTRACTION_DATE', 'BUY_PRICE', 'BUY_PRICE_CURRENCY', 'SPOT_PRICE', 'SPOT_PRICE_CURRENCY', 'SELL_PRICE', 'SELL_PRICE_CURRENCY']].to_csv('db/raw_prices.csv', header=True, index=False)
+records[['EXTRACTION_DATE', 'BUY_PRICE', 'BUY_PRICE_CURRENCY', 'SPOT_PRICE', 'SPOT_PRICE_CURRENCY', 'SELL_PRICE', 'SELL_PRICE_CURRENCY']].to_csv('db/raw_prices.csv', index=False)

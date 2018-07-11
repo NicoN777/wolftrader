@@ -61,12 +61,10 @@ def __calculate():
     plt.savefig(rsi_graph)
 
 
-    # plt.show()
-
 def process():
     log_info('Data Processing')
     __calculate()
-    # email_util.send_email("indicators", None, ['nicolasnunezromay@gmail.com'], "hola", 'report')
+    email_util.send_email("indicators", ['nicolasnunezromay@gmail.com'], "hola", 'report')
 
 def trade():
     log_info('Wolf Trader')

@@ -21,7 +21,7 @@ class EmailUtil:
         except Exception as error:
             log_critical('{} error instantiating'.format(EmailUtil.class_name))
 
-    def create_email(self, subject, sender, receiver, body, template):
+    def create_email(self, subject, receiver, body, template):
         from email.mime.multipart import MIMEMultipart
         from email.mime.text import MIMEText
         from email.mime.image import MIMEImage
@@ -66,9 +66,9 @@ class EmailUtil:
         except Exception as error:
             log_critical('{} creating email has failed, Error: {}'.format(EmailUtil.class_name, error))
 
-    def send_email(self, subject, sender, receiver, body, template):
+    def send_email(self, subject, receiver, body, template):
         try:
-            email = self.create_email(subject, sender, receiver, body, template)
+            email = self.create_email(subject, receiver, body, template)
             self.__server.send_message(email, self.__email_account, receiver)
             log_info('{}, mail has been sent successfully to the following address(es): {}'.format(EmailUtil.class_name, receiver))
         except Exception as error:
