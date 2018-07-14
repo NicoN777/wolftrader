@@ -1,0 +1,4 @@
+  501  1103  1102   0  9:51PM ttys000    0:00.00 /Library/Frameworks/Python.framework/Versions/3.6/Resources/Python.app/Contents/MacOS/Python run.py data_mine
+  501  1104  1102   0  9:51PM ttys000    0:00.00 /Library/Frameworks/Python.framework/Versions/3.6/Resources/Python.app/Contents/MacOS/Python run.py data_process
+  501  1105  1102   0  9:51PM ttys000    0:00.00 /Library/Frameworks/Python.framework/Versions/3.6/Resources/Python.app/Contents/MacOS/Python run.py trade
+  501  1107  1102   0  9:51PM ttys000    0:00.00 grep run.py

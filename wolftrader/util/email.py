@@ -1,6 +1,6 @@
 from wolftrader.application import gmail_account, gmail_password, gmail_port, gmail_stmp, \
     report_buy, report_sell, report_report, \
-    wolf_logo, indicators_graph, rsi_graph
+    wolf_logo, indicators_graph, rsi_graph, report_table
 from wolftrader.util.logger import *
 import smtplib
 
@@ -48,13 +48,15 @@ class EmailUtil:
                         msg.attach(body)
 
                 elif template == 'report':
-                    with open(report_report, 'r') as r, open(indicators_graph, 'rb') as ig, \
-                        open(rsi_graph, 'rb') as rg:
+                    with open(report_report, 'r') as r, \
+                         open(indicators_graph, 'rb') as ig, \
+                         open(rsi_graph, 'rb') as rg, \
+                         open(report_table) as table:
                         indicators = MIMEImage(ig.read(), 'png')
                         rsi = MIMEImage(rg.read(), 'png')
                         indicators.add_header('Content-ID', '<indicators>')
                         rsi.add_header('Content-ID', '<rsi>')
-                        body = MIMEText(r.read(), 'html')
+                        body = MIMEText(r.read().replace('$table$', table.read()), 'html')
                         msg.attach(body)
                         msg.attach(indicators)
                         msg.attach(rsi)

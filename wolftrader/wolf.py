@@ -2,7 +2,7 @@
     Main wolftrade module.
 """
 
-from .application import coinbase_user_key, coinbase_user_secret, indicators_graph, rsi_graph
+from .application import coinbase_user_key, coinbase_user_secret, indicators_graph, rsi_graph, report_table
 from .entity import cbuser as cu
 from .util.logger import *
 from .dao import price_history_dao
@@ -21,19 +21,11 @@ def mine():
     log_info('Data Miner')
     price_history_dao.insert_price_record(coinbase_user.get_price_records)
 
-
-
-    # email_util.send_email('Subject Test', None, receivers, 'Body Test', 'sell')
-    # while True:
-    #     price_history_dao.insert_price_record(coinbase_user.get_price_records)
-    #     time.sleep(600)
-
 def __calculate():
     log_info('Calculate Indicators')
     prices = price_history_dao.get_price_records()
-    prices_dataframe = pd.DataFrame(data=prices['records'], columns=prices['column_names'])
-    prices_dataframe.set_index(keys='EXTRACTION_DATE', inplace=True)
-    indicators = pd.DataFrame(index=prices_dataframe.index, data=prices_dataframe['SPOT_PRICE'])
+    indicators = pd.DataFrame(data=prices['records'], columns=prices['column_names'])
+    indicators.set_index(keys='EXTRACTION_DATE', inplace=True)
     indicators['MA24'] = indicators['SPOT_PRICE'].rolling(24).mean()
     indicators['UPPER_BOLLINGER'] = indicators['MA24'] + (2 * indicators['SPOT_PRICE'].rolling(24).std())
     indicators['LOWER_BOLLINGER'] = indicators['MA24'] - (2 * indicators['SPOT_PRICE'].rolling(24).std())
@@ -50,15 +42,22 @@ def __calculate():
     indicators['LOWER'] = 30
     indicators['UPPER'] = 70
 
-    indicators[['SPOT_PRICE', 'MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER']].plot(figsize=(16, 5))
+
+    with open(report_table, 'w') as table:
+        table.write(indicators.tail(60).to_html(columns=['SPOT_PRICE', 'BUY_PRICE', 'SELL_PRICE', 'MA24',
+                                                         'UPPER_BOLLINGER', 'LOWER_BOLLINGER', 'RSI'],
+                                                header=True, index=True))
+
+    indicators[['SPOT_PRICE', 'MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER']].tail(60).plot(figsize=(16, 5))
     plt.title("WolfiePE Indicators Bollinger")
     plt.tight_layout()
     plt.savefig(indicators_graph)
 
-    indicators[['RSI', 'LOWER', 'UPPER']].plot(figsize=(16,5))
+    indicators[['RSI', 'LOWER', 'UPPER']].tail(60).plot(figsize=(16, 5))
     plt.title("WolfiePE Indicators RSI")
     plt.tight_layout()
     plt.savefig(rsi_graph)
+    print(indicators.tail(60))
 
 
 def process():
@@ -68,3 +67,6 @@ def process():
 
 def trade():
     log_info('Wolf Trader')
+    prices = price_history_dao.get_price_records()
+    indicators = pd.DataFrame(data=prices['records'], columns=prices['column_names'])
+    print(indicators.tail(60))

@@ -18,8 +18,10 @@ if __name__ == '__main__':
                 mine()
                 time.sleep(300)
         elif sys.argv[1] == 'data_process':
-            from wolftrader.wolf import process
-            process()
+            while True:
+                from wolftrader.wolf import process
+                process()
+                time.sleep(300)
         elif sys.argv[1] == 'trade':
             while True:
                 from wolftrader.wolf import trade
