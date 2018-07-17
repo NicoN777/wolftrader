@@ -8,6 +8,7 @@ from .util.logger import *
 from .dao import price_history_dao
 from .dao import user_dao
 from .util import email
+from .dao import indicators_dao
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -15,6 +16,7 @@ import matplotlib.pyplot as plt
 coinbase_user = cu.CoinbaseUser(coinbase_user_key, coinbase_user_secret)
 price_history_dao = price_history_dao.PriceHistoryDAO()
 user_dao = user_dao.UserDAO()
+indicators_dao = indicators_dao.IndicatorsDAO()
 email_util = email.EmailUtil()
 
 def mine():
@@ -29,8 +31,6 @@ def __calculate():
     indicators['MA24'] = indicators['SPOT_PRICE'].rolling(24).mean()
     indicators['UPPER_BOLLINGER'] = indicators['MA24'] + (2 * indicators['SPOT_PRICE'].rolling(24).std())
     indicators['LOWER_BOLLINGER'] = indicators['MA24'] - (2 * indicators['SPOT_PRICE'].rolling(24).std())
-    # print(prices_dataframe[['SPOT_PRICE', 'MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER']])
-
     indicators['DIFF'] = indicators['SPOT_PRICE'].diff()
     indicators['ADVA'] = indicators[indicators['DIFF'] >= 0]['DIFF']
     indicators['DECL'] = -1 * (indicators[indicators['DIFF'] <= 0]['DIFF'])
@@ -42,6 +42,11 @@ def __calculate():
     indicators['LOWER'] = 30
     indicators['UPPER'] = 70
 
+    subset = indicators[['MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER', 'AVG_GAIN', 'AVG_LOSS']].fillna(0).tail(1)
+    indicator_records = [tuple(record) for record in subset.values]
+    print(indicator_records[0])
+    indicators_dao.insert_indicator(indicator_records[0])
+    print('done')
 
     with open(report_table, 'w') as table:
         table.write(indicators.tail(60).to_html(columns=['SPOT_PRICE', 'BUY_PRICE', 'SELL_PRICE', 'MA24',
@@ -57,16 +62,14 @@ def __calculate():
     plt.title("WolfiePE Indicators RSI")
     plt.tight_layout()
     plt.savefig(rsi_graph)
-    print(indicators.tail(60))
 
 
 def process():
     log_info('Data Processing')
     __calculate()
-    email_util.send_email("indicators", ['nicolasnunezromay@gmail.com'], "hola", 'report')
+    # email_util.send_email("indicators", ['nicolasnunezromay@gmail.com'], "hola", 'report')
 
 def trade():
     log_info('Wolf Trader')
     prices = price_history_dao.get_price_records()
     indicators = pd.DataFrame(data=prices['records'], columns=prices['column_names'])
-    print(indicators.tail(60))
