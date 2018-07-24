@@ -42,15 +42,16 @@ def __calculate():
     indicators['LOWER'] = 30
     indicators['UPPER'] = 70
 
-    subset = indicators[['MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER', 'AVG_GAIN', 'AVG_LOSS']].fillna(0).tail(1)
-    indicator_records = [tuple(record) for record in subset.values]
-    print(indicator_records[0])
-    indicators_dao.insert_indicator(indicator_records[0])
-    print('done')
+    # subset = indicators[['MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER', 'AVG_GAIN', 'AVG_LOSS']].fillna(0).tail(1)
+    # indicator_records = [tuple(record) for record in subset.values]
+    # print(indicator_records[0])
+    # indicators_dao.insert_indicator(indicator_records[0])
+    # print('done')
 
     with open(report_table, 'w') as table:
         table.write(indicators.tail(60).to_html(columns=['SPOT_PRICE', 'BUY_PRICE', 'SELL_PRICE', 'MA24',
-                                                         'UPPER_BOLLINGER', 'LOWER_BOLLINGER', 'RSI'],
+                                                         'UPPER_BOLLINGER', 'LOWER_BOLLINGER', 'AVG_GAIN',
+                                                         'AVG_LOSS', 'RSI'],
                                                 header=True, index=True))
 
     indicators[['SPOT_PRICE', 'MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER']].tail(60).plot(figsize=(16, 5))
@@ -67,7 +68,7 @@ def __calculate():
 def process():
     log_info('Data Processing')
     __calculate()
-    # email_util.send_email("indicators", ['nicolasnunezromay@gmail.com'], "hola", 'report')
+    email_util.send_email("indicators", ['nicolasnunezromay@gmail.com'], "hola", 'report')
 
 def trade():
     log_info('Wolf Trader')
