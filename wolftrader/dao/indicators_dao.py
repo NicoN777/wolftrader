@@ -13,7 +13,8 @@ class IndicatorsDAO(DatabaseUtil):
 
     def get_indicators(self):
         try:
-            sql = 'SELECT CALCULATION_DATE, MA24, UPPER_BOLLINGER, LOWER_BOLLINGER, AVG_GAIN, AVG_LOSS, RSI FROM INDICATORS'
+            sql = 'SELECT CALCULATION_DATE, SPOT_PRICE, BUY_PRICE, ' \
+                  'SELL_PRICE, MA24, UPPER_BOLLINGER, LOWER_BOLLINGER, AVG_GAIN, AVG_LOSS, RSI FROM INDICATORS'
             cursor = DatabaseUtil.cursor.execute(sql)
             column_names = list(map(lambda x: x[0], cursor.description))
             data = {'column_names': column_names, 'records': cursor.fetchall()}
@@ -24,7 +25,6 @@ class IndicatorsDAO(DatabaseUtil):
 
     def insert_indicator(self, indicator):
         try:
-            print('Im here')
             sql = 'INSERT INTO INDICATORS(CALCULATION_DATE, MA24, UPPER_BOLLINGER, ' \
                   'LOWER_BOLLINGER, AVG_GAIN, AVG_LOSS, RSI)' \
                   'VALUES(?, ?, ?, ?, ?, ?, ?)'
@@ -37,8 +37,10 @@ class IndicatorsDAO(DatabaseUtil):
 
     def insert_indicators(self, indicators):
         try:
-            sql = ''
+            sql = 'INSERT OR IGNORE INTO INDICATORS(CALCULATION_DATE, SPOT_PRICE, BUY_PRICE, ' \
+                  'SELL_PRICE, MA24, UPPER_BOLLINGER, LOWER_BOLLINGER, AVG_GAIN, AVG_LOSS, RSI) ' \
+                  'VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
             DatabaseUtil.cursor.executemany(sql, indicators)
             log_info('{} successful, SQL = {} '.format(IndicatorsDAO, sql))
         except Exception as indicators_dao_error:
-            log_critical('{}, indicators_dao_error while executing {}\n Error: {}'.format(IndicatorsDAO, indicators_dao_error))
+            log_critical('{}, indicators_dao_error while executing {}\n Error: {}'.format(IndicatorsDAO.class_name, indicators_dao_error))

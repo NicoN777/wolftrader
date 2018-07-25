@@ -22,6 +22,11 @@ if __name__ == '__main__':
                 from wolftrader.wolf import process
                 process()
                 time.sleep(300)
+        elif sys.argv[1] == 'notify':
+            while True:
+                from wolftrader.wolf import notify
+                notify()
+                time.sleep(3600)
         elif sys.argv[1] == 'trade':
             while True:
                 from wolftrader.wolf import trade

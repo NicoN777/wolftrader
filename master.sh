@@ -1,3 +1,4 @@
-python run.py "data_mine" >> ./logs/batchmodemine.log &
-python run.py "data_process" >> ./logs/batchmodeprocess.log &
-python run.py "trade" >> ./logs/batchmodetrade.log &
+python run.py "data_mine" &
+python run.py "data_process" &
+python run.py "notify" &
+python run.py "trade" &
