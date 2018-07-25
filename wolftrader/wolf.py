@@ -84,4 +84,4 @@ def trade():
     log_info('Wolf Trader')
     indicators_dao = IndicatorsDAO()
     data = indicators_dao.get_indicators()
-    indicators = pd.DataFrame(data=data['records'], columns=)
+    indicators = pd.DataFrame(data=data['records'], columns=data['column_names'])
