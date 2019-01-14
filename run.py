@@ -3,7 +3,6 @@
 
     To run:
         python run.py [args]
-        "mine"
         "visualize"
         "trade"
 """

@@ -85,3 +85,13 @@ def trade():
     indicators_dao = IndicatorsDAO()
     data = indicators_dao.get_indicators()
     indicators = pd.DataFrame(data=data['records'], columns=data['column_names'])
+    signal = indicators.tail(1)['RSI']
+    sell_signal= (signal < 30).bool()
+    buy_signal = (signal > 70).bool()
+    if sell_signal:
+        print('Selling')
+    elif buy_signal:
+        print('Buying')
+    else:
+        print(signal)
+

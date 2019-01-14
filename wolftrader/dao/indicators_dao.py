@@ -14,7 +14,7 @@ class IndicatorsDAO(DatabaseUtil):
     def get_indicators(self):
         try:
             sql = 'SELECT CALCULATION_DATE, SPOT_PRICE, BUY_PRICE, ' \
-                  'SELL_PRICE, MA24, UPPER_BOLLINGER, LOWER_BOLLINGER, AVG_GAIN, AVG_LOSS, RSI FROM INDICATORS'
+                  'SELL_PRICE, MA24, UPPER_BOLLINGER, LOWER_BOLLINGER, AVG_GAIN, AVG_LOSS, RSI FROM INDICATORS ORDER BY CALCULATION_DATE ASC'
             cursor = DatabaseUtil.cursor.execute(sql)
             column_names = list(map(lambda x: x[0], cursor.description))
             data = {'column_names': column_names, 'records': cursor.fetchall()}

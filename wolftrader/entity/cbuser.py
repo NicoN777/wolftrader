@@ -61,7 +61,7 @@ class CoinbaseUser:
         pass
 
     def __repr__(self):
-        return 'CoinbaseUser('') variables are confidential'
+        return 'CoinbaseUser('') keys are confidential yo'
 
     def __str__(self):
         return '----> User: {} {} {} {}'.format(self.user_name, self.user_email, self.user_username, self.user_id)

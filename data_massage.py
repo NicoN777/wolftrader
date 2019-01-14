@@ -1,5 +1,5 @@
 #Author: Nicolas Nunez
-#Put my fucking data in lovely csv format
+#Put my data in lovely csv format
 
 import csv
 import json
