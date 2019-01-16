@@ -1,1 +1,3 @@
-recursive-include wolftrader *.html *.png *.properties
+recursive-include data *.json
+recursive-include db *.*
+recursive-include wolftrader/resources * *.html *.png *.properties
