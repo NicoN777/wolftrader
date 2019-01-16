@@ -1,4 +1,5 @@
-python run.py "data_mine" &
-python run.py "data_process" &
-python run.py "notify" &
-python run.py "trade" &
+#!/usr/bin/env bash
+python wolftrader/cli.py "data_mine" &
+python wolftrader/cli.py "data_process" &
+python wolftrader/cli.py "notify" &
+python wolftrader/cli.py "trade" &

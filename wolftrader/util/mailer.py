@@ -1,7 +1,7 @@
-from wolftrader.application import gmail_account, gmail_password, gmail_port, gmail_stmp, \
-    report_buy, report_sell, report_report, \
-    wolf_logo, indicators_graph, rsi_graph, report_table
-from wolftrader.util.logger import *
+from application import (gmail_account, gmail_password, gmail_port, gmail_stmp,
+    report_buy, report_sell, report_report,
+    wolf_logo, indicators_graph, rsi_graph, report_table)
+from util.logger import *
 import smtplib
 
 class EmailUtil:

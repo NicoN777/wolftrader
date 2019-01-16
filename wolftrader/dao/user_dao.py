@@ -1,5 +1,5 @@
-from wolftrader.util.logger import *
-from wolftrader.util.database import DatabaseUtil
+from util.logger import *
+from util.database import DatabaseUtil
 
 class UserDAO(DatabaseUtil):
     class_name = __file__

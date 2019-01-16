@@ -17,8 +17,11 @@ setup(
     url='',
     packages=find_packages(exclude=['docs','tests']),
     entry_points={
-        'console_scripts': ['wolfmine=wolftrader.cli:mine']
-    }
-    classifiers = ['Prog Lang - Python - 3.6']
+        'console_scripts': ['wolfmine=wolftrader.cli:miner',
+                            'wolfmail=wolftrader.cli:notifier',
+                            'wolfprocess=wolftrader.cli:processor',
+                            'wolftrade=wolftrader.cli:trader']
+    },
+    classifiers=['Prog Lang - Python - 3.6']
 )
 

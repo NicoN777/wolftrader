@@ -8,7 +8,7 @@ from .util.logger import *
 from .dao.price_history_dao import PriceHistoryDAO
 from .dao.user_dao import UserDAO
 from .dao.indicators_dao import IndicatorsDAO
-from .util import email
+from .util import mailer
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -55,7 +55,7 @@ def process():
 
 def notify():
     indicators_dao = IndicatorsDAO()
-    email_util = email.EmailUtil()
+    email_util = mailer.EmailUtil()
     data = indicators_dao.get_indicators()
     indicators = pd.DataFrame(data=data['records'], columns=data['column_names'])
     indicators.set_index(keys='CALCULATION_DATE', inplace=True)

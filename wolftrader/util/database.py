@@ -1,13 +1,10 @@
 import sqlite3
-from ..util.logger import *
-from wolftrader.application import database_name, database_password, database_username, database_settings
+from util.logger import *
+from application import database_name, database_password, database_username, database_settings
 
 class DatabaseUtil:
 
     class_name =  __file__
-    connection = None
-    db_name = None
-    cursor = None
 
     def __init__(self):
         try:

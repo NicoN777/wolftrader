@@ -1,5 +1,16 @@
+certifi==2018.4.16
+chardet==3.0.4
 coinbase==2.0.6
 configparser==3.5.0
+cycler==0.10.0
+idna==2.7
 matplotlib==2.1.2
 numpy==1.13.3
 pandas==0.21.0rc1
+pycrypto==2.6.1
+pyparsing==2.2.0
+python-dateutil==2.7.3
+pytz==2018.4
+requests==2.19.1
+six==1.11.0
+urllib3==1.23

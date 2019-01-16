@@ -1,5 +1,5 @@
 import logging
-from ..application import log_format, log_level, log_file
+from application import log_format, log_level, log_file
 
 try:
     logger = logging.getLogger(__name__)

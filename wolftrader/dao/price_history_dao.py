@@ -1,5 +1,5 @@
-from ..util.logger import *
-from wolftrader.util.database import DatabaseUtil
+from util.logger import *
+from util.database import DatabaseUtil
 
 class PriceHistoryDAO(DatabaseUtil):
     class_name = __file__

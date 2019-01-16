@@ -1,5 +1,5 @@
 from coinbase.wallet.client import Client
-from wolftrader.util.logger import *
+from util.logger import *
 
 class CoinbaseUser:
 

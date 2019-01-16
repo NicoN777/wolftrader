@@ -1,6 +1,10 @@
+.DS_Store
 .idea/
 logs/
-**/*.pyc
+**/*.py[oc]
 data/
 data_massage.py
 **/*.csv
+dist
+build
+*.egg*
