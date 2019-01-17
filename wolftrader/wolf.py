@@ -11,6 +11,7 @@ from dao.indicators_dao import IndicatorsDAO
 from util import mailer
 import pandas as pd
 import matplotlib.pyplot as plt
+from util.texter import Texter
 
 
 def mine():
@@ -89,9 +90,14 @@ def trade():
     sell_signal= (signal < 30).bool()
     buy_signal = (signal > 70).bool()
     if sell_signal:
-        print('Selling')
+        body = 'Signal --- A sell signal has been triggered!'
+        with Texter(body):
+            print('Kablamo!')
+
     elif buy_signal:
-        print('Buying')
+        body = 'Signal --- A buy signal has been triggered!'
+        with Texter(body):
+            print('Kablast!')
     else:
         print(signal)
 

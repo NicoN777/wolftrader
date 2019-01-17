@@ -47,7 +47,13 @@ try:
     rsi_graph = os.path.join(WOLF, config.get('Images', 'image.graph.rsi'))
 
     #Users
-    users = [config.get('Users', value) for value in config.options('Users')]
+    users = [config.get('Users', name) for name in config.options('Users')]
+
+    #SMS
+    twilio_sid = str(config.get('Twilio', 'sid'))
+    twilio_token = str(config.get('Twilio', 'token'))
+    sender = str(config.get('Twilio', 'sender'))
+    receivers = [config.get('SMS', name) for name in config.options('SMS')]
 
 except Exception as error:
     print('An error has occurred: {}'.format(error))
