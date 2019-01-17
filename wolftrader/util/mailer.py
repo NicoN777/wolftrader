@@ -63,7 +63,8 @@ class EmailUtil:
                 else:
                     log_error('No template specified')
 
-            log_debug('{} email has been created successfully: \n {}'.format(EmailUtil.class_name, msg.as_string()))
+            # log_debug('{} email has been created successfully: \n {}'.format(EmailUtil.class_name, msg.as_string()))
+            log_debug('{} email has been created successfully \n'.format(EmailUtil.class_name))
             return msg
         except Exception as error:
             log_critical('{} creating email has failed, Error: {}'.format(EmailUtil.class_name, error))
