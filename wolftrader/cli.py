@@ -27,7 +27,7 @@ if __name__ == '__main__':
         elif sys.argv[1] == 'trade':
             while True:
                 trade()
-                time.sleep(300)
+                time.sleep(3600*8)
         else:
             print('Parameter not recognized')
     else:
