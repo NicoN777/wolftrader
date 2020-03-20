@@ -75,7 +75,7 @@ class EmailUtil:
             self.__server.send_message(email, self.__email_account, receiver)
             log_info('{}, mail has been sent successfully to the following address(es): {}'.format(EmailUtil.class_name, receiver))
         except Exception as error:
-            log_critical('{} error sending email'.format(EmailUtil.class_name))
+            log_critical(f'{EmailUtil} error sending email {error}')
 
     def __str__(self):
         return 'EmailUtil ---> {} {} {}'.format(self.__email_account, self.__port, self.__smtp)

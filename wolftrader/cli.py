@@ -15,15 +15,15 @@ if __name__ == '__main__':
         if sys.argv[1] == 'data_mine':
             while True:
                 mine()
-                time.sleep(300)
+                time.sleep(600)
         elif sys.argv[1] == 'data_process':
             while True:
                 process()
-                time.sleep(300)
+                time.sleep(600)
         elif sys.argv[1] == 'notify':
             while True:
                 notify()
-                time.sleep(3600)
+                time.sleep(3600*4)
         elif sys.argv[1] == 'trade':
             while True:
                 trade()
