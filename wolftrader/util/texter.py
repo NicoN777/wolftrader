@@ -11,7 +11,6 @@ class Texter:
         self.body = body
 
     def __enter__(self):
-        print(sender, receivers)
         for recipient in receivers:
             self.message = client.messages.create(
                 messaging_service_sid=sender,
