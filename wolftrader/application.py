@@ -4,11 +4,10 @@ import os
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir))
 WOLF = os.path.join(PROJECT_ROOT, os.path.join(os.path.abspath(os.path.dirname(__file__))))
 
-
 try:
-    wolf_properties = str(os.path.join(os.environ.get('WOLF_DATA_PATH'), 'wolf.properties'))
-    config = configparser.RawConfigParser()
-    config.read([os.path.join(WOLF, 'resources/conf', 'application.properties'), wolf_properties])
+    config=configparser.RawConfigParser()
+    config.read(os.path.join(WOLF, 'resources/conf', 'application.properties'))
+
     #Database Properties
     database_name = os.path.join(PROJECT_ROOT, config.get('DatabaseProperties', 'database.name'))
     database_username = str(config.get('DatabaseProperties', 'database.username'))
@@ -29,6 +28,7 @@ try:
     gmail_password = str(config.get('EmailProperties', 'gmail.pass'))
     gmail_port = config.getint('EmailProperties', 'gmail.port')
     gmail_stmp = str(config.get('EmailProperties', 'gmail.smtp'))
+    users = ['nicolasnunezromay@gmail.com']
 
     #HtmlTemplates
     email_buy_template = os.path.join(WOLF, config.get('HtmlTemplates', 'email.template.buy'))
@@ -46,14 +46,11 @@ try:
     indicators_graph = os.path.join(WOLF, config.get('Images', 'image.graph.indicators'))
     rsi_graph = os.path.join(WOLF, config.get('Images', 'image.graph.rsi'))
 
-    #Users
-    users = [config.get('Users', name) for name in config.options('Users')]
-
-    #SMS
-    twilio_sid = str(config.get('Twilio', 'sid'))
-    twilio_token = str(config.get('Twilio', 'token'))
-    sender = str(config.get('Twilio', 'sender'))
-    receivers = [config.get('SMS', name) for name in config.options('SMS')]
+    #Twilio
+    twilio_sid =  config.get('Twilio', 'sid')
+    twilio_token = config.get('Twilio', 'token')
+    receivers = str(config.get('Twilio', 'receivers')).split(',')
+    sender = config.get('Twilio', 'sender')
 
 except Exception as error:
-    print('An error has occurred: {}'.format(error))
+    print('An error has occurred: {}'.format(error.error))

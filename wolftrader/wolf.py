@@ -5,9 +5,9 @@
 from application import coinbase_user_key, coinbase_user_secret, indicators_graph, rsi_graph, report_table, users
 from entity import cbuser as cu
 from util.logger import *
-from dao.price_history_dao import PriceHistoryDAO
-from dao.user_dao import UserDAO
-from dao.indicators_dao import IndicatorsDAO
+from dao.price_history import PriceHistoryDAO
+from dao.user import UserDAO
+from dao.indicators import IndicatorsDAO
 from util import mailer
 import pandas as pd
 import matplotlib.pyplot as plt
