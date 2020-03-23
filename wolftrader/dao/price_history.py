@@ -1,13 +1,13 @@
 from util.logger import *
-from util.database import SQLiteUtil
+from util.database import SQLiteUtil, SQLServerUtil
 
 
-class PriceHistoryDAO(SQLiteUtil):
+class PriceHistoryDAO(SQLServerUtil):
     class_name = __file__
 
     def __init__(self):
         try:
-            SQLiteUtil.__init__(self)
+            SQLServerUtil.__init__(self)
             log_info('{} | PriceHistoryDAO has been initialized successfully.'.format(PriceHistoryDAO.class_name))
         except Exception as price_history_dao_error:
             log_critical('{} | PriceHistory initialization has failed, price_history_dao_error: {}.'.format(PriceHistoryDAO.class_name, price_history_dao_error))

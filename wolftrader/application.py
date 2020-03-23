@@ -52,5 +52,20 @@ try:
     receivers = str(config.get('Twilio', 'receivers')).split(',')
     sender = config.get('Twilio', 'sender')
 
+    #AzureSQLDatabase
+
+    __azure_server = config.get('AzureSQLDatabase', 'server')
+    __azure_database = config.get('AzureSQLDatabase', 'database')
+    __azure_username = config.get('AzureSQLDatabase', 'username')
+    __azure_password = config.get('AzureSQLDatabase', 'password')
+    __azure_port = config.getint('AzureSQLDatabase', 'port')
+    __azure_driver = config.get('AzureSQLDatabase', 'driver')
+    azure_connection_string = 'DRIVER='+__azure_driver+';SERVER='+__azure_server\
+                              +';PORT=1443;DATABASE='+__azure_database\
+                              +';UID='+__azure_username+';PWD='+ __azure_password
+
 except Exception as error:
     print('An error has occurred: {}'.format(error.error))
+
+if __name__ == '__main__':
+    print(azure_connection_string)

@@ -1,13 +1,13 @@
 from util.logger import *
-from util.database import SQLiteUtil
+from util.database import SQLiteUtil, SQLServerUtil
 
 
-class IndicatorsDAO(SQLiteUtil):
+class IndicatorsDAO(SQLServerUtil):
     class_name = __file__
 
     def __init__(self):
         try:
-            SQLiteUtil.__init__(self)
+            SQLServerUtil.__init__(self)
             log_info('{} | IndicatorsDAO has been initialized successfully.'.format(IndicatorsDAO.class_name))
         except Exception as indicators_dao_error:
             log_critical('{} | IndicatorsDAO initialization has failed, indicators_dao_error: {}.'.format(IndicatorsDAO.class_name, indicators_dao_error))
