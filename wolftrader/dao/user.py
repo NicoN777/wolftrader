@@ -1,8 +1,8 @@
 from util.logger import *
-from util.database import SQLiteUtil
+from util.database import SQLiteUtil, SQLServerUtil
 
 
-class UserDAO(SQLiteUtil):
+class UserDAO(SQLServerUtil):
     class_name = __file__
 
     def __init__(self):
