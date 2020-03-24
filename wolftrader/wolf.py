@@ -2,9 +2,12 @@
     Main wolftrade module.
 """
 
-from application import coinbase_user_key, coinbase_user_secret, indicators_graph, rsi_graph, report_table, users
+from application import coinbase_user_key, coinbase_user_secret, \
+    indicators_graph, rsi_graph, report_table, \
+    users, azure_store_account_name, azure_store_connstr
 from entity import cbuser as cu
 from util.logger import *
+from util.filestore import FileStore
 from dao.price_history import PriceHistoryDAO
 from dao.user import UserDAO
 from dao.indicators import IndicatorsDAO
@@ -20,6 +23,7 @@ def mine():
     price_history_dao = PriceHistoryDAO(kind='AzureSQLServer')
     coinbase_user = cu.CoinbaseUser(coinbase_user_key, coinbase_user_secret)
     price_history_dao.insert_price_record(coinbase_user.get_price_records)
+
 
 def __calculate():
     log_info('Calculate Indicators')
@@ -43,16 +47,26 @@ def __calculate():
 
     subset = indicators[['SPOT_PRICE', 'BUY_PRICE', 'SELL_PRICE', 'MA24', 'UPPER_BOLLINGER',
                          'LOWER_BOLLINGER', 'AVG_GAIN', 'AVG_LOSS', 'RSI']].fillna(0)
+    subset = subset.loc[~subset.index.duplicated(keep='first')]
     subset.reset_index(inplace=True)
-
     indicator_records = [tuple(record) for record in subset.values]
     indicators_dao.insert_indicators(indicator_records)
 
+
+def __upload_graphs():
+    import datetime
+    import os
+    now = datetime.datetime.now().strftime("%m-%d-%Y%H%M%S")
+    file_names = [(name, f'{now}-{os.path.basename(name)}') for name in [rsi_graph, indicators_graph]]
+    file_store = FileStore(azure_store_account_name, azure_store_connstr)
+    for file in file_names:
+        file_store.upload(*file)
 
 
 def process():
     log_info('Data Processing')
     __calculate()
+
 
 def notify():
     indicators_dao = IndicatorsDAO(kind='AzureSQLServer')
@@ -78,6 +92,7 @@ def notify():
     plt.title("WolfiePE Indicators RSI")
     plt.tight_layout()
     plt.savefig(rsi_graph)
+    __upload_graphs()
     email_util.send_email("indicators", users, "hola", 'report')
 
 

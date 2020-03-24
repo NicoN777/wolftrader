@@ -24,26 +24,7 @@ class IndicatorsDAO:
         self.repository.write(sql, indicator, IndicatorsDAO.class_name)
 
     def insert_indicators(self, indicators):
-        sql = 'MERGE INTO INDICATORS AS target ' \
-              'USING(VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)) ' \
-              'AS source (CALCULATION_DATE, SPOT_PRICE, BUY_PRICE,SELL_PRICE, MA24, UPPER_BOLLINGER, LOWER_BOLLINGER, AVG_GAIN, AVG_LOSS, RSI) ' \
-              'ON target.calculation_date = source.calculation_date ' \
-              'WHEN MATCHED THEN ' \
-              'UPDATE SET ' \
-              'SPOT_PRICE = source.SPOT_PRICE, ' \
-              'BUY_PRICE = source.BUY_PRICE, ' \
-              'SELL_PRICE = source.SELL_PRICE, ' \
-              'MA24 = source.MA24, ' \
-              'UPPER_BOLLINGER = source.UPPER_BOLLINGER, ' \
-              'LOWER_BOLLINGER = source.LOWER_BOLLINGER, ' \
-              'AVG_GAIN = source.AVG_GAIN, ' \
-              'AVG_LOSS = source.AVG_LOSS, ' \
-              'RSI = source.RSI ' \
-              'WHEN NOT MATCHED THEN ' \
-              'INSERT (CALCULATION_DATE, SPOT_PRICE, BUY_PRICE, ' \
-              'SELL_PRICE, MA24, UPPER_BOLLINGER, LOWER_BOLLINGER, AVG_GAIN, AVG_LOSS, RSI) ' \
-              'VALUES(source.CALCULATION_DATE, source.SPOT_PRICE, ' \
-              'source.BUY_PRICE, source.SELL_PRICE, source.MA24, ' \
-              'source.UPPER_BOLLINGER, source.LOWER_BOLLINGER, ' \
-              'source.AVG_GAIN, source.AVG_LOSS, source.RSI);'
+        sql = 'INSERT INTO INDICATORS(CALCULATION_DATE, SPOT_PRICE, BUY_PRICE, ' \
+                  'SELL_PRICE, MA24, UPPER_BOLLINGER, LOWER_BOLLINGER, AVG_GAIN, AVG_LOSS, RSI) ' \
+                  'VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         self.repository.write_many(sql, indicators, IndicatorsDAO.class_name)
