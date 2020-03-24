@@ -49,6 +49,7 @@ class Base:
         try:
             result = self.cursor.executemany(statement, records)
             log_debug(f'{tracker} successful, SQL = {statement} | record = {records} ')
+            log_info(f'{tracker} successful, SQL = {statement}')
         except Exception as e:
             log_critical(f'{tracker} error while executing {statement}\n Error: {e}')
 

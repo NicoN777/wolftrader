@@ -64,8 +64,9 @@ try:
                               +';PORT=1443;DATABASE='+__azure_database\
                               +';UID='+__azure_username+';PWD='+ __azure_password
 
+    #Azure FileStore
+    azure_store_account_name = config.get('AzureFileStore', 'account.name')
+    azure_store_connstr = config.get('AzureFileStore', 'connection.string')
+
 except Exception as error:
     print('An error has occurred: {}'.format(error.error))
-
-if __name__ == '__main__':
-    print(azure_connection_string)
