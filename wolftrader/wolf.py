@@ -17,14 +17,14 @@ from util.texter import Texter
 def mine():
     log_info('Data Miner')
     user_dao = UserDAO()
-    price_history_dao = PriceHistoryDAO()
+    price_history_dao = PriceHistoryDAO(kind='AzureSQLServer')
     coinbase_user = cu.CoinbaseUser(coinbase_user_key, coinbase_user_secret)
     price_history_dao.insert_price_record(coinbase_user.get_price_records)
 
 def __calculate():
     log_info('Calculate Indicators')
-    price_history_dao = PriceHistoryDAO()
-    indicators_dao = IndicatorsDAO()
+    price_history_dao = PriceHistoryDAO(kind='AzureSQLServer')
+    indicators_dao = IndicatorsDAO(kind='AzureSQLServer')
     data = price_history_dao.get_price_records()
     indicators = pd.DataFrame(data=data['records'], columns=data['column_names'])
     indicators.set_index(keys='EXTRACTION_DATE', inplace=True)
@@ -55,7 +55,7 @@ def process():
     __calculate()
 
 def notify():
-    indicators_dao = IndicatorsDAO()
+    indicators_dao = IndicatorsDAO(kind='AzureSQLServer')
     email_util = mailer.EmailUtil()
     data = indicators_dao.get_indicators()
     indicators = pd.DataFrame(data=data['records'], columns=data['column_names'])
@@ -83,7 +83,7 @@ def notify():
 
 def trade():
     log_info('Wolf Trader')
-    indicators_dao = IndicatorsDAO()
+    indicators_dao = IndicatorsDAO(kind='AzureSQLServer')
     data = indicators_dao.get_indicators()
     indicators = pd.DataFrame(data=data['records'], columns=data['column_names'])
     signal = indicators.tail(1)['RSI']

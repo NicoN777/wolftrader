@@ -1,13 +1,13 @@
 from util.logger import *
-from util.database import SQLiteUtil, SQLServerUtil
+from util.database import DBFactory
 
 
-class UserDAO(SQLServerUtil):
+class UserDAO:
     class_name = __file__
 
-    def __init__(self):
+    def __init__(self, kind=None):
         try:
-            SQLiteUtil.__init__(self)
+            self.repository = DBFactory(kind=kind).get_db()
             log_info('{} | UserDAO has been initialized successfully'.format(UserDAO.class_name))
         except Exception as error:
             log_critical('{} | UserDAO initialization has failed. Error: {}'.format(UserDAO.class_name, error))
@@ -15,7 +15,7 @@ class UserDAO(SQLServerUtil):
     def get_user_by_id(self, id):
         try:
             sql = 'SELECT NAME, EMAIL FROM USERS WHERE ID=?'
-            cursor = SQLiteUtil.cursor.execute(sql, id)
+            cursor = self.repository.cursor.execute(sql, id)
             data = cursor.fetchall()
             log_info('{} | get_user_by_id successful, SQL={}'.format(UserDAO.class_name, sql))
             return data
@@ -25,7 +25,7 @@ class UserDAO(SQLServerUtil):
     def get_user_emails(self):
         try:
             sql = 'SELECT EMAIL FROM USERS'
-            cursor = SQLiteUtil.cursor.execute(sql)
+            cursor = self.repository.cursor.execute(sql)
             data = cursor.fetchall()
             log_info('{} | get_user_emails successful, SQL={} '.format(UserDAO.class_name, sql))
             print(data, type(data))
