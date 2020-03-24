@@ -13,8 +13,8 @@ class EmailUtil:
             self.__email_password = gmail_password
             self.__port = gmail_port
             self.__smtp = gmail_stmp
-            self.__server = smtplib.SMTP_SSL(self.__smtp, self.__port)
-            self.__server.ehlo()
+            self.__server = smtplib.SMTP(host=self.__smtp, port=self.__port)
+            self.__server.starttls()
             self.__server.login(self.__email_account, self.__email_password)
             log_info('{} Successfully authenticated user {} '.format(EmailUtil.class_name, self.__email_account))
             log_debug('{} has been instantiated '.format(EmailUtil.class_name))
