@@ -10,6 +10,7 @@ from util.logger import *
 from util.filestore import FileStore
 from util.handler import exception
 from dao.price_history import PriceHistoryDAO
+from dao.transaction import TransactionDAO
 from dao.user import UserDAO
 from dao.indicators import IndicatorsDAO
 from util import mailer
@@ -103,6 +104,7 @@ def notify():
 
 
 def trade():
+    transaction_dao = TransactionDAO(kind='AzureSQLServer')
     Selector = namedtuple('Selector', ['value', 'band'])
     log_info('Wolf Trader')
     indicators_dao = IndicatorsDAO(kind='AzureSQLServer')
@@ -127,15 +129,21 @@ def trade():
                    f'\nSELL: ${sell_price.iloc[0]} ' \
                    f'\nSelector: {closer}'
 
+    #Build record for insertion...
+    #TYPE, AMOUNT, BOUGHT_AT, SPOT_PRICE, BUY_PRICE, SELL_PRICE
     if sell_signal:
         body = f'Signal --- A sell signal has been triggered\n{pricing_info}'
         with Texter(body):
             log_info(f'Sell signal triggered, message sent. {pricing_info}')
+        sell_record = ('SELL', 1, sell_price.iloc[0], spot_price.iloc[0], buy_price.iloc[0], sell_price.iloc[0])
+        transaction_dao.insert_transaction(sell_record)
 
     elif buy_signal:
         body = f'Signal --- A buy signal has been triggered\n{pricing_info}'
         with Texter(body):
             log_info(f'buy signal triggered, message sent. {pricing_info}')
+        buy_record = ('BUY', 1, buy_price.iloc[0], spot_price.iloc[0], buy_price.iloc[0], sell_price.iloc[0])
+        transaction_dao.insert_transaction(buy_record);
     else:
         log_info(pricing_info)
 
