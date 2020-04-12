@@ -111,42 +111,63 @@ def trade():
     data = indicators_dao.get_indicators()
     indicators = pd.DataFrame(data=data['records'], columns=data['column_names'])
     data_point = indicators.tail(1)
-    spot_price = data_point['SPOT_PRICE']
-    buy_price = data_point['BUY_PRICE']
-    sell_price = data_point['SELL_PRICE']
-    upper = data_point['UPPER_BOLLINGER']
-    lower = data_point['LOWER_BOLLINGER']
-    rsi = data_point['RSI']
-    selectors = [Selector(abs((spot_price - upper).iloc[0]), 'upper'),
-                (Selector(abs((spot_price - lower).iloc[0]), 'lower'))]
+    spot_price = data_point['SPOT_PRICE'].iloc[0]
+    buy_price = data_point['BUY_PRICE'].iloc[0]
+    sell_price = data_point['SELL_PRICE'].iloc[0]
+    upper = data_point['UPPER_BOLLINGER'].iloc[0]
+    lower = data_point['LOWER_BOLLINGER'].iloc[0]
+    rsi = data_point['RSI'].iloc[0]
+    selectors = [Selector(abs(spot_price - upper), 'upper'),
+                (Selector(abs(spot_price - lower), 'lower'))]
     closer = min(selectors, key=lambda s: s.value)
-    oversold = (rsi < 30).bool()
-    overbought = (rsi > 70).bool()
+    oversold = rsi < 30
+    overbought = rsi > 70
     buy_signal = oversold and closer.band == 'lower'
     sell_signal = overbought and closer.band == 'upper'
-    pricing_info = f'SPOT: ${spot_price.iloc[0]}' \
-                   f'\nBUY: ${buy_price.iloc[0]}' \
-                   f'\nSELL: ${sell_price.iloc[0]} ' \
+    pricing_info = f'SPOT: ${spot_price}' \
+                   f'\nBUY: ${buy_price}' \
+                   f'\nSELL: ${sell_price} ' \
                    f'\nSelector: {closer}'
 
     #Build record for insertion...
     #TYPE, AMOUNT, BOUGHT_AT, SPOT_PRICE, BUY_PRICE, SELL_PRICE
     if sell_signal:
         body = f'Signal --- A sell signal has been triggered\n{pricing_info}'
-        with Texter(body):
-            log_info(f'Sell signal triggered, message sent. {pricing_info}')
-        sell_record = ('SELL', 1, sell_price.iloc[0], spot_price.iloc[0], buy_price.iloc[0], sell_price.iloc[0])
-        transaction_dao.insert_transaction(sell_record)
+        __sms(body, 'sell', pricing_info)
+        last_transaction = __get_last_transaction(transaction_dao, 'BUY')
+        price_at = last_transaction['PRICE_AT'].iloc[0]
+        gain = price_at - sell_price
+        if price_at > sell_price:
+            record = ('SELL', 1, sell_price, spot_price, buy_price, sell_price, gain)
+        else:
+            record = ('SSNONE', 0, sell_price, spot_price, buy_price, sell_price, gain)
+        transaction_dao.insert_transaction(record)
 
     elif buy_signal:
         body = f'Signal --- A buy signal has been triggered\n{pricing_info}'
-        with Texter(body):
-            log_info(f'buy signal triggered, message sent. {pricing_info}')
-        buy_record = ('BUY', 1, buy_price.iloc[0], spot_price.iloc[0], buy_price.iloc[0], sell_price.iloc[0])
-        transaction_dao.insert_transaction(buy_record);
+        __sms(body, 'buy', pricing_info)
+        last_transaction = __get_last_transaction(transaction_dao, 'SELL')
+        price_at = last_transaction['PRICE_AT'].iloc[0]
+        gain = price_at - buy_price
+        if buy_price < price_at:
+            record = ('BUY', 1, buy_price, spot_price, buy_price, sell_price, gain)
+        else:
+            record = ('BSNONE', 0, buy_price, spot_price, buy_price, sell_price, gain)
+        transaction_dao.insert_transaction(record)
     else:
         log_info(pricing_info)
 
+
+def __get_last_transaction(transaction_dao, type):
+    last_transaction_data = transaction_dao.get_n_transactions_of_type(type, 1)
+    last_transaction = pd.DataFrame(data=last_transaction_data['records'],
+                                    columns=last_transaction_data['column_names'])
+    return last_transaction
+
+
+def __sms(body, type, pricing_info):
+    with Texter(body):
+        log_info(f'{type} signal triggered, message sent. {pricing_info}')
 
 if __name__ == '__main__':
     __get_indicators()
