@@ -2,6 +2,7 @@ import sqlite3
 from application import database_name, database_password, database_username, database_settings, azure_connection_string
 import pyodbc
 from util.logger import *
+from util.handler import exception
 
 class DBFactory:
     def __init__(self, kind='sqlite'):
@@ -25,41 +26,33 @@ class Base:
         self.host = host
         self.port = port
 
+    @exception
     def read(self, query, tracker, param=None):
-        try:
-            if not param:
-                result = self.cursor.execute(query)
-            else:
-                result = self.cursor.execute(query, param)
-            column_names = list(map(lambda x:x[0], result.description))
-            data = {'column_names': column_names, 'records': result.fetchall()}
-            log_debug(f'{tracker}, SQL = {query}, executed successfully')
-            return data
-        except Exception as e:
-            log_critical(f'{tracker} error while executing {query}\n Error: {e}')
+        if not param:
+            result = self.cursor.execute(query)
+        else:
+            result = self.cursor.execute(query, param)
+        column_names = list(map(lambda x:x[0], result.description))
+        data = {'column_names': column_names, 'records': result.fetchall()}
+        log_debug(f'{tracker}, SQL = {query}, executed successfully')
+        return data
 
+    @exception
     def write(self, statement, record, tracker):
-        try:
-            result = self.cursor.execute(statement, record)
-            log_debug(f'{tracker} successful, SQL = {statement} | record = {record} ')
-        except Exception as e:
-            log_critical(f'{tracker} error while executing {statement}\n Error: {e}')
+        result = self.cursor.execute(statement, record)
+        log_debug(f'{tracker} successful, SQL = {statement} | record = {record} ')
 
+    @exception
     def write_many(self, statement, records, tracker):
-        try:
-            result = self.cursor.executemany(statement, records)
-            log_debug(f'{tracker} successful, SQL = {statement} | record = {records} ')
-            log_info(f'{tracker} successful, SQL = {statement}')
-        except Exception as e:
-            log_critical(f'{tracker} error while executing {statement}\n Error: {e}')
+        result = self.cursor.executemany(statement, records)
+        log_debug(f'{tracker} successful, SQL = {statement} | record = {records} ')
+        log_info(f'{tracker} successful, SQL = {statement}')
 
+    @exception
     def close_connection(self):
-        try:
-            log_debug('Closing connection to database: {} ...'.format(self.db_name))
-            self.connection.close()
-            log_debug('Connection closed!')
-        except Exception as error:
-            log_critical('Error closing database connection, Error: {}'.format(error))
+        log_debug('Closing connection to database: {} ...'.format(self.db_name))
+        self.connection.close()
+        log_debug('Connection closed!')
 
     def __repr__(self):
         return str(self.__dict__)

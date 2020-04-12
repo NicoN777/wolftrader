@@ -40,6 +40,7 @@ try:
     report_sell = os.path.join(WOLF, config.get('Reports','report.sell'))
     report_report = os.path.join(WOLF, config.get('Reports','report.report'))
     report_table = os.path.join(WOLF, config.get('Reports', 'report.report.table'))
+    indicators_csv = os.path.join(WOLF, config.get('Reports', 'report.csv'))
 
     #Images
     wolf_logo = os.path.join(WOLF, config.get('Images', 'image.logo.wolfie'))
