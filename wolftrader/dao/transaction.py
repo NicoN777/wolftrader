@@ -15,16 +15,16 @@ class TransactionDAO:
 
     def insert_transaction(self, record):
         sql = 'INSERT INTO TRANSACTION_HISTORY' \
-              '(TYPE, AMOUNT, BOUGHT_AT, SPOT_PRICE, BUY_PRICE, SELL_PRICE) ' \
-              'VALUES(?, ?, ?, ?, ?, ?)'
+              '(TYPE, AMOUNT, PRICE_AT, SPOT_PRICE, BUY_PRICE, SELL_PRICE, GAIN) ' \
+              'VALUES(?, ?, ?, ?, ?, ?, ?)'
         self.repository.write(sql, record, TransactionDAO.class_name)
 
     def get_transactions(self):
-        sql = 'SELECT TYPE, AMOUNT, BOUGHT_AT, SPOT_PRICE, BUY_PRICE, SELL_PRICE ' \
+        sql = 'SELECT TRANSACTION_DATE, TYPE, AMOUNT, PRICE_AT, SPOT_PRICE, BUY_PRICE, SELL_PRICE ' \
               'FROM TRANSACTION_HISTORY ORDER BY TRANSACTION_DATE'
         return self.repository.read(sql, TransactionDAO.class_name)
 
-    def get_n_transactions(self, num_records):
-        sql = 'SELECT TYPE, AMOUNT, BOUGHT_AT, SPOT_PRICE, BUY_PRICE, SELL_PRICE ' \
-              f'FROM TRANSACTION_HISTORY ORDER BY TRANSACTION_DATE LIMIT {num_records}'
+    def get_n_transactions_of_type(self, type, num_records):
+        sql = f"SELECT TOP {num_records} TRANSACTION_DATE, TYPE, AMOUNT, PRICE_AT, SPOT_PRICE, BUY_PRICE, SELL_PRICE " \
+              f"FROM TRANSACTION_HISTORY WHERE TYPE = '{type}' ORDER BY TRANSACTION_DATE DESC"
         return self.repository.read(sql, TransactionDAO.class_name)
