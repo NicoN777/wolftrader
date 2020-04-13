@@ -26,5 +26,5 @@ class TransactionDAO:
 
     def get_n_transactions_of_type(self, type, num_records):
         sql = f"SELECT TOP {num_records} TRANSACTION_DATE, TYPE, AMOUNT, PRICE_AT, SPOT_PRICE, BUY_PRICE, SELL_PRICE " \
-              f"FROM TRANSACTION_HISTORY WHERE TYPE = '{type}' ORDER BY TRANSACTION_DATE DESC"
+              f"FROM TRANSACTION_HISTORY WHERE TYPE = '{type}' ORDER BY TRANSACTION_DATE DESC, ID DESC"
         return self.repository.read(sql, TransactionDAO.class_name)
