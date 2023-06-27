@@ -1,5 +1,5 @@
 from twilio.rest import Client
-from application import twilio_sid, twilio_token, receivers, sender
+from application import twilio_sid, twilio_token, sms_recipients, sender
 from .logger import *
 
 client = Client(twilio_sid, twilio_token)
@@ -11,8 +11,7 @@ class Texter:
         self.body = body
 
     def __enter__(self):
-        print(sender, receivers)
-        for recipient in receivers:
+        for recipient in sms_recipients:
             self.message = client.messages.create(
                 messaging_service_sid=sender,
                 body=self.body,

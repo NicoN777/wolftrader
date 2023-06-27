@@ -1,8 +1,9 @@
 import logging
-from wolftrader.application import log_file, log_format, log_level
+from application import log_file, log_format, log_level
 from functools import partial, wraps
 
 logging.basicConfig(filename=log_file, format=log_format, level=log_level)
+
 
 def debug(func=None, *, prefix=''):
     if func is None:

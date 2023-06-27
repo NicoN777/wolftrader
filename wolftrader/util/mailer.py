@@ -1,8 +1,9 @@
 from application import (gmail_account, gmail_password, gmail_port, gmail_stmp,
-    report_buy, report_sell, report_report,
-    wolf_logo, indicators_graph, rsi_graph, report_table)
+                         report_buy, report_sell, report_report,
+                         wolf_logo, indicators_graph, rsi_graph, report_table)
 from util.logger import *
 import smtplib
+
 
 class EmailUtil:
     class_name = __file__
@@ -13,8 +14,8 @@ class EmailUtil:
             self.__email_password = gmail_password
             self.__port = gmail_port
             self.__smtp = gmail_stmp
-            self.__server = smtplib.SMTP_SSL(self.__smtp, self.__port)
-            self.__server.ehlo()
+            self.__server = smtplib.SMTP(host=self.__smtp, port=self.__port)
+            self.__server.starttls()
             self.__server.login(self.__email_account, self.__email_password)
             log_info('{} Successfully authenticated user {} '.format(EmailUtil.class_name, self.__email_account))
             log_debug('{} has been instantiated '.format(EmailUtil.class_name))
@@ -25,7 +26,6 @@ class EmailUtil:
         from email.mime.multipart import MIMEMultipart
         from email.mime.text import MIMEText
         from email.mime.image import MIMEImage
-        from email.headerregistry import Address
         try:
             msg = MIMEMultipart('alternative')
             msg['Subject'] = subject
@@ -63,7 +63,6 @@ class EmailUtil:
                 else:
                     log_error('No template specified')
 
-            # log_debug('{} email has been created successfully: \n {}'.format(EmailUtil.class_name, msg.as_string()))
             log_debug('{} email has been created successfully \n'.format(EmailUtil.class_name))
             return msg
         except Exception as error:
@@ -75,7 +74,7 @@ class EmailUtil:
             self.__server.send_message(email, self.__email_account, receiver)
             log_info('{}, mail has been sent successfully to the following address(es): {}'.format(EmailUtil.class_name, receiver))
         except Exception as error:
-            log_critical('{} error sending email'.format(EmailUtil.class_name))
+            log_critical(f'{EmailUtil} error sending email {error}')
 
     def __str__(self):
         return 'EmailUtil ---> {} {} {}'.format(self.__email_account, self.__port, self.__smtp)

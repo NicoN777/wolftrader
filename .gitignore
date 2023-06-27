@@ -8,3 +8,6 @@ data_massage.py
 dist
 build
 *.egg*
+/wolftrader/resources/reports/temptable.html
+/wolftrader/resources/images/indicators.png
+/wolftrader/resources/images/rsi.png
