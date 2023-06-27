@@ -1,8 +1,9 @@
 from application import (gmail_account, gmail_password, gmail_port, gmail_stmp,
-    report_buy, report_sell, report_report,
-    wolf_logo, indicators_graph, rsi_graph, report_table)
+                         report_buy, report_sell, report_report,
+                         wolf_logo, indicators_graph, rsi_graph, report_table)
 from util.logger import *
 import smtplib
+
 
 class EmailUtil:
     class_name = __file__
@@ -25,7 +26,6 @@ class EmailUtil:
         from email.mime.multipart import MIMEMultipart
         from email.mime.text import MIMEText
         from email.mime.image import MIMEImage
-        from email.headerregistry import Address
         try:
             msg = MIMEMultipart('alternative')
             msg['Subject'] = subject
@@ -63,7 +63,6 @@ class EmailUtil:
                 else:
                     log_error('No template specified')
 
-            # log_debug('{} email has been created successfully: \n {}'.format(EmailUtil.class_name, msg.as_string()))
             log_debug('{} email has been created successfully \n'.format(EmailUtil.class_name))
             return msg
         except Exception as error:

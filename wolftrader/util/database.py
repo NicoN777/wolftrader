@@ -81,12 +81,12 @@ class SQLiteUtil(Base):
             SQLiteUtil.db_name = database_name.split('/')[-1]
             SQLiteUtil.connection = sqlite3.connect(database_name, isolation_level=None)
             SQLiteUtil.cursor = SQLiteUtil.connection.cursor()
-            log_debug('{} | Connection to database {}, successfull.'.format(SQLiteUtil.class_name, SQLiteUtil.db_name))
+            log_debug('{} | Connection to database {}, successful.'.format(SQLiteUtil.class_name, SQLiteUtil.db_name))
         except Exception as error:
             log_critical('{} | Connection has failed, Error: {}'.format(SQLiteUtil.class_name, error))
 
     def __repr__(self):
-        return 'SQLiteUtil() initialization variables are read from application.properties file.'
+        return 'SQLiteUtil() initialization variables are read from wolfie.ini file.'
 
     def __str__(self):
         return '----> Database Name: {}'.format(SQLiteUtil.db_name)

@@ -6,7 +6,6 @@
         "visualize"
         "trade"
 """
-import sys
 import time
 import argparse
 from wolf import mine, process, notify, trade

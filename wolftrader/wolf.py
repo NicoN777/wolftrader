@@ -4,16 +4,15 @@
 
 from application import coinbase_user_key, coinbase_user_secret, \
     indicators_graph, rsi_graph, report_table, \
-    users, azure_store_account_name, azure_store_connstr, indicators_csv
+    mail_recipients, azure_store_account_name, azure_store_connstr, indicators_csv
 from entity import cbuser as cu
-from util.logger import *
 from util.filestore import FileStore
-from util.handler import exception
-from dao.price_history import PriceHistoryDAO
-from dao.transaction import TransactionDAO
-from dao.user import UserDAO
-from dao.indicators import IndicatorsDAO
+from data.price_history import PriceHistoryDAO
+from data.transaction import TransactionDAO
+from data.user import UserDAO
+from data.indicators import IndicatorsDAO
 from util import mailer
+from util.logger import *
 import pandas as pd
 import matplotlib.pyplot as plt
 from util.texter import Texter
@@ -22,8 +21,8 @@ from collections import namedtuple
 
 def mine():
     log_info('Data Mine')
-    user_dao = UserDAO(kind='AzureSQLServer')
-    price_history_dao = PriceHistoryDAO(kind='AzureSQLServer')
+    user_dao = UserDAO(kind='sqlite')
+    price_history_dao = PriceHistoryDAO(kind='sqlite')
     coinbase_user = cu.CoinbaseUser(coinbase_user_key, coinbase_user_secret)
     price_history_dao.insert_price_record(coinbase_user.get_price_records)
 
@@ -32,20 +31,20 @@ def process():
     log_info('Data Process')
     __calculate()
     __write_indicators()
-    __upload_files([indicators_graph, rsi_graph, indicators_csv])
+    # __upload_files([indicators_graph, rsi_graph, indicators_csv])
 
 
 def notify():
     email_util = mailer.EmailUtil()
-    email_util.send_email("indicators", users, "hola", 'report')
+    email_util.send_email("indicators", mail_recipients, "hola", 'report')
 
 
 def trade():
     log_info('Trade')
-    transaction_dao = TransactionDAO(kind='AzureSQLServer')
+    transaction_dao = TransactionDAO(kind='sqlite')
     Selector = namedtuple('Selector', ['value', 'band'])
     log_info('Wolf Trader')
-    indicators_dao = IndicatorsDAO(kind='AzureSQLServer')
+    indicators_dao = IndicatorsDAO(kind='sqlite')
     data = indicators_dao.get_indicators()
     indicators = pd.DataFrame(data=data['records'], columns=data['column_names'])
     data_point = indicators.tail(1)
@@ -96,8 +95,8 @@ def trade():
 
 def __calculate():
     log_info('Calculate Indicators')
-    price_history_dao = PriceHistoryDAO(kind='AzureSQLServer')
-    indicators_dao = IndicatorsDAO(kind='AzureSQLServer')
+    price_history_dao = PriceHistoryDAO(kind='sqlite')
+    indicators_dao = IndicatorsDAO(kind='sqlite')
     data = price_history_dao.get_price_records()
     indicators = pd.DataFrame(data=data['records'], columns=data['column_names'])
     indicators.set_index(keys='EXTRACTION_DATE', inplace=True)
@@ -134,7 +133,7 @@ def __upload_files(files):
 
 
 def __write_indicators():
-    indicators_dao = IndicatorsDAO(kind='AzureSQLServer')
+    indicators_dao = IndicatorsDAO(kind='sqlite')
     data = indicators_dao.get_indicators()
     indicators = pd.DataFrame(data=data['records'], columns=data['column_names'])
     indicators.set_index(keys='CALCULATION_DATE', inplace=True)
@@ -142,18 +141,18 @@ def __write_indicators():
     indicators['UPPER'] = 70
 
     with open(report_table, 'w') as table:
-        table.write(indicators.tail(200).to_html(columns=['SPOT_PRICE', 'BUY_PRICE', 'SELL_PRICE', 'MA24',
+        table.write(indicators.tail(100).to_html(columns=['SPOT_PRICE', 'BUY_PRICE', 'SELL_PRICE', 'MA24',
                                                           'UPPER_BOLLINGER', 'LOWER_BOLLINGER', 'AVG_GAIN',
                                                           'AVG_LOSS', 'RSI'],
                                                  header=True, index=True))
 
     indicators.to_csv(indicators_csv, header=True, index=True)
-    indicators[['SPOT_PRICE', 'MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER']].tail(200).plot(figsize=(16, 5))
+    indicators[['SPOT_PRICE', 'MA24', 'UPPER_BOLLINGER', 'LOWER_BOLLINGER']].tail(100).plot(figsize=(16, 5))
     plt.title("WolfiePE Indicators Bollinger")
     plt.tight_layout()
     plt.savefig(indicators_graph)
 
-    indicators[['RSI', 'LOWER', 'UPPER']].tail(200).plot(figsize=(16, 5))
+    indicators[['RSI', 'LOWER', 'UPPER']].tail(100).plot(figsize=(16, 5))
     plt.title("WolfiePE Indicators RSI")
     plt.tight_layout()
     plt.savefig(rsi_graph)
